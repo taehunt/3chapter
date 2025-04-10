@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>백엔드 연결 테스트</title>
+</head>
+<body>
+  <h1>서버와 연결해보기</h1>
+  <button id="getMessageBtn">서버에서 메시지 받기</button>
+  <p id="message"></p>
+
+  <script>
+    document.getElementById("getMessageBtn").addEventListener("click", async () => {
+      const res = await fetch("http://localhost:3000/api/message");
+      const data = await res.json();
+      document.getElementById("message").textContent = data.message;
+    });
+  </script>
+</body>
+</html>

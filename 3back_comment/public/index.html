@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>댓글 기능</title>
+</head>
+<body>
+  <h1>댓글 남기기</h1>
+  <form id="commentForm">
+    <input type="text" id="username" placeholder="이름" required />
+    <input type="text" id="comment" placeholder="댓글 입력" required />
+    <button type="submit">등록</button>
+  </form>
+
+  <ul id="commentList"></ul>
+
+  <script>
+    const form = document.getElementById("commentForm");
+    const usernameInput = document.getElementById("username");
+    const commentInput = document.getElementById("comment");
+    const commentList = document.getElementById("commentList");
+
+    async function loadComments() {
+      const res = await fetch("/api/comments");
+      const data = await res.json();
+      commentList.innerHTML = "";
+      data.forEach(comment => {
+        const li = document.createElement("li");
+        li.textContent = `[${comment.username}] ${comment.text}`;
+        commentList.appendChild(li);
+      });
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const username = usernameInput.value;
+      const text = commentInput.value;
+
+      const res = await fetch("/api/comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, text }),
+      });
+
+      if (res.ok) {
+        usernameInput.value = "";
+        commentInput.value = "";
+        loadComments();
+      }
+    });
+
+    // 초기 댓글 로딩
+    loadComments();
+  </script>
+</body>
+</html>
